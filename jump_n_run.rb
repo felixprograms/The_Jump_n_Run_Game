@@ -1,17 +1,45 @@
+# .Inside Level..Each Space is 50 pixels.Wide.
 require 'ruby2d'
-
 set width: 1200, height: 500
+def create_sound
+    jump = Sound.new('jump_01.wav')
+    jump.play
+end
+def create_block(x,y)
+    @floor = Rectangle.new(
+    x: x, y: y,
+    width: 50, height: 50,
+    color: 'red'
+    )
+end
+def create_player(x,y)
+    @player = Rectangle.new(
+        x: x, y: y,
+        width: 30, height: 30,
+        color: 'yellow'
+    )
+end
+File.open('Level_1') do |f|
+    y = 0
+    f.each_line do |line|
+        x = 0
+        line.split('').each do |character|
+            if character == '='
+                create_block(x*50,y*50)
+            elsif character == '0'
+                create_player(x*50,y*50)
+            end
+            x += 1
+        end
+        y += 1
+    end
+end
 
-@player = Rectangle.new(
-  x: 600, y: 50,
-  width: 15, height: -15,
-  color: 'yellow'
-)
-@floor = Rectangle.new(
-  x: 0, y: 300,
-  width: 1200, height: 30,
-  color: 'red'
-)
+
+
+
+
+
 @x_speed = 0
 @y_speed = 0
 @gravity = 0.5
@@ -47,6 +75,7 @@ on :key do |event|
         @y_speed = -15
         @double_jumped_alllllowed -= 1
         @last_jumped = Time.now.to_f
+        create_sound
     elsif event.key == 'up' && event.type == :up
         @y_speed = 0
     end
