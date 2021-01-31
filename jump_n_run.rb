@@ -5,6 +5,14 @@ def create_sound
     jump = Sound.new('jump_01.wav')
     jump.play
 end
+# coin = Sprite.new(
+#   'coin.png',
+#   clip_width: 84,
+#   time: 300,
+#   loop: true
+# )
+# coin.play
+
 def create_block(x,y)
     @floor = Rectangle.new(
     x: x, y: y,
@@ -13,11 +21,30 @@ def create_block(x,y)
     )
 end
 def create_player(x,y)
-    @player = Rectangle.new(
-        x: x, y: y,
-        width: 30, height: 30,
-        color: 'yellow'
-    )
+    @player = Sprite.new(
+    'hero.png',
+    width: 39,
+    height: 50,
+    clip_width: 78,
+    time: 250,
+    x: x,
+    y: y,
+    animations: {
+    walk: 1..2,
+    climb: 3..4,
+    cheer: 5..6
+    }
+)
+
+
+    on :key_down do |event|
+        case event.key
+            when 'left'
+                @player.play animation: :walk, loop: true, flip: :horizontal
+            when 'right'
+                @player.play animation: :walk, loop: true
+        end
+    end
 end
 File.open('Level_1') do |f|
     y = 0
