@@ -10,7 +10,7 @@ class MovingTile < Tile
   def create_sprite(x:, y:)
     @x_anchor = x
     @y_anchor = y
-    @x_speed = 2
+    @x_speed = 1
     Sprite.new(
       "ground.png",
       width: 50,
