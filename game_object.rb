@@ -1,6 +1,6 @@
 class GameObject
   attr_accessor :x_speed, :y_speed, :sprite, :game
-  GRAVITY = 10
+  GRAVITY = 7
 
   def initialize(game:, x:, y:, type: nil, stationary: true)
     @stationary = stationary
@@ -55,7 +55,7 @@ class GameObject
     @sprite.y += @y_speed
 
     @y_speed += GRAVITY unless @stationary
-    @y_speed = 20 if @y_speed > 20
+    @y_speed = 15 if @y_speed > 15
 
     if @game.no_of_coins_left < 1
       @game.generate_next_level
