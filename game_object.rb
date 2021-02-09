@@ -39,14 +39,27 @@ class GameObject
         @x_speed, @y_speed = 0, 0
       end
 
+      @game.coins.each do |coin|
+        if (next_x_overlap?(coin) && current_y_overlap?(coin)) || (next_y_overlap?(coin) && current_x_overlap?(coin))
+          coin.sprite.remove
+          @game.coins -= [coin]
+          @game.no_of_coins_left -= 1
+        end
+      end
+
       @sprite.x = @sprite.x % WINDOW_WIDTH
     end
+
 
     @sprite.x += @x_speed
     @sprite.y += @y_speed
 
     @y_speed += GRAVITY unless @stationary
     @y_speed = 20 if @y_speed > 20
+
+    if @game.no_of_coins_left < 1
+      @game.generate_next_level
+    end
   end
 
   def left(with_speed_offset = false)

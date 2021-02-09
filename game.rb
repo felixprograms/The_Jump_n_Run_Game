@@ -18,12 +18,15 @@ Image.new(
   z: -10
 )
 class Game
-  attr_accessor :player, :floor_tiles, :starting_coordinates
+  attr_accessor :player, :floor_tiles, :starting_coordinates, :coins, :no_of_coins_left, :current_level
 
   def initialize
     @player = nil
     @floor_tiles = []
+    @coins = []
+    @no_of_coins_left = 0
     @starting_coordinates = nil
+    @current_level = 1
   end
 
   def run
@@ -31,13 +34,26 @@ class Game
   end
 
   def update_game_objects
-    ([@player] + @floor_tiles).each(&:update_game_object)
+    ([@player] + @floor_tiles + @coins).each(&:update_game_object)
   end
 
-private
+  def generate_next_level
+    ([@player] + @coins + @floor_tiles).each { |object| object.sprite.remove }
+
+    @player = nil
+    @floor_tiles = []
+    @coins = []
+    @no_of_coins_left = 0
+    @starting_coordinates = nil
+    @current_level += 1
+
+    generate_level
+  end
+
+  private
 
   def generate_level
-    File.foreach("Level_1").each_with_index do |line, y|
+    File.foreach("Level_#{@current_level}").each_with_index do |line, y|
       line.split("").each_with_index do |character, x|
         if character == "="
           @floor_tiles << Tile.new(game: self, x: x * 50, y: y * 50)
@@ -46,7 +62,8 @@ private
         elsif character == "R"
           @floor_tiles << MovingTile.new(game: self, x: x * 50, y: y * 50, stationary: true, x_speed: -1.0)
         elsif character == "C"
-          @floor_tiles << Coin.new(game: self, x: x * 50, y: y * 50)
+          @coins << Coin.new(game: self, x: x * 50, y: y * 50)
+          @no_of_coins_left += 1
         elsif character == "H"
           @player = Hero.new(game: self, x: x * 50, y: y * 50)
           @starting_coordinates = [x * 50, y * 50]
